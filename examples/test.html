@@ -1,0 +1,117 @@
+<script src="./lib/require.js"></script>
+<script>
+
+require(['../amd/core/core','../amd/core/EventObject'], function(Nex){
+	
+Nex.define('_Mixin', {
+	config: function(){
+		console.log('mixin')
+		return {
+			b : 111,
+			x : 3		
+		}
+	},
+	say: function(){
+		console.log('mix');	
+	}
+})
+
+Nex.define('A', {
+	mixins : '_Mixin',
+	config: function(){
+		console.log('A config')
+		return {
+			a: 1,
+			b: 2	
+		}	
+	},
+	read: function(){},
+	say2: function(){
+		console.log('A')	
+	}	
+});
+
+Nex.define('B', 'A',{
+	config: function(){
+		console.log('B config')
+		return {
+			b: 3,
+			c: 4	
+		}	
+	},
+	read: function(){
+		console.log(4);	
+	},
+	say: function(){
+		this._super();
+		console.log('B')	
+	}	
+});
+
+Nex.define('C', 'B',{
+	config: function(){
+		console.log('C config')
+		return {
+			c: 5,
+			d: 6	
+		}	
+	},
+	read: function(){
+		console.log(4);	
+	},
+	say: function(){
+		this._super();
+		console.log('C')	
+	}	
+});
+
+
+var o = Nex.create('B'); o.say();
+console.log(o)
+
+var o = Nex.create('C'); o.say();
+console.log(o)
+
+//return;
+
+var emitter = Nex.create('EventObject',{
+	onclick: function(){
+		console.log('inner click...')	
+	}
+});
+
+var idx = 1;
+
+var eid = emitter.on('click', function(){
+	console.log(this+'');
+	console.log('click...', idx++);
+	return false;
+}, 'nobo');
+emitter.one('click', function(){
+	console.log('click2...');
+});
+
+emitter.emit('click');
+emitter.emit('click');
+
+emitter.off(eid);
+
+emitter.emit('click');
+
+var idx = 1;
+
+emitter.on('click.c', function(){
+	console.log('click...', idx++);
+});
+
+emitter.emit('click');
+emitter.emit('click');
+
+emitter.off('.c');
+
+emitter.emit('click');		
+});
+
+
+
+</script>
